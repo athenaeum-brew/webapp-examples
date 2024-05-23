@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- 
+cd src/main/resources/templates
+python -m http.server 987
+-->
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${title}">Undertow</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+    <style>
+        h1>div {
+            height: 40px;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="content" class="container">
+        <h1>A programmer had a problem. He thought to himself, "I know, I'll solve it with threads!". </h1>
+        <hr>
+        <!-- h1>
+            <div id="resul-0" class="result"></div>
+            <div id="resul-1" class="result"></div>
+            <div id="resul-2" class="result"></div>
+            <div id="resul-3" class="result"></div>
+            <div id="resul-4" class="result"></div>
+        </!-->
+        <h1>
+            <div th:each="item,iterStat : ${immutableList}" th:id="'result-' + ${iterStat.index}" class="result"></div>
+        </h1>
+        <button id="refreshButton" class="btn btn-primary mt-3">Refresh</button>
+        <button id="intervalButton" class="btn btn-secondary mt-3">Set Interval</button>
+        <div class="input-group py-2">
+            <span class="input-group-text" id="basic-addon1">Delay</span>
+            <input id="delayInput" type="text" class="form-control" placeholder="0" aria-label="Delay" aria-describedby="basic-addon1">
+            <span class="input-group-text" id="basic-addon1">Interval</span>
+            <input id="intervalInput" type="text" class="form-control" placeholder="3000" aria-label="Delay" aria-describedby="basic-addon1">
+        </div>
+        <div class="progress" id="progress-bar">
+            <div class="progress-bar bg-info" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+        </div>
+    </div>
+
+    <script>
+        // Function to make a GET request asynchronously
+        let incr = 0;
+        function makeRequest(url, id, callback) {
+            fetch(url + '/' + id)
+                .then(async response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+
+                    const text = await response.text();
+                    const div = response.headers.get("Order")
+                    const divID = "result-" + parseInt(div, 10) 
+                    console.log('fetch', text, div, divID)
+                    return {
+                        data: text,
+                        id: divID
+                    };
+                })
+                .then(({ data, id }) => {
+                    callback(data, id);
+                })
+                .catch(error => {
+                    console.error('There was a problem with the fetch operation:', error);
+                });
+        }
+
+        function makeRequest0(url, callback) {
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET', url + '/' + incr++, true); // Append unique query parameter
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                    callback(xhr.responseText);
+                }
+            };
+            xhr.send();
+        }
+
+        // Function to update a DIV element with the response data
+        function updateDiv(div, data) {
+            if (data) {
+                div.style.backgroundColor = "#f0f0f0"
+            } else {
+                div.style.backgroundColor = "#c0c0c0"
+            }
+            div.innerHTML = data;
+        }
+
+        let start = null;
+        // Function to refresh all results
+        function refreshResults() {
+            const divs = document.querySelectorAll('.result');
+            essuieGlace = !essuieGlace
+
+            let i = 1;
+            let delay = document.getElementById('delayInput').value | 0;
+            // console.log(delay)
+            divs.forEach(function (div) {
+                if (div.id) {
+                    // console.log(div.id)
+                    updateDiv(div, "");
+                    setTimeout(() => {
+                        makeRequest('http://localhost:8080/data', div.id, function (response, id) {
+                            // console.log(id)
+                            let originalDiv = document.getElementById(id);
+                            // console.log(div.id, originalDiv.id)
+                            updateDiv(originalDiv, response);
+                        })
+                    }, i++ * delay)
+                }
+            });
+
+            if (timerId) {
+                start = performance.now();
+                console.log("start decreasing", start)
+                decreaseProgressBar();
+
+            } else {
+                start = null
+            }
+        }
+
+        // Add click event listener to the refresh button
+        document.getElementById('refreshButton').addEventListener('click', refreshResults);
+
+        // Initial request to populate results
+        // refreshResults();
+
+        let timerId = null;
+        let pbId = null;
+        let iButton = document.getElementById('intervalButton')
+        let essuieGlace = false
+        iButton.addEventListener('click', () => {
+            if (!timerId) {
+                let interval = document.getElementById('intervalInput').value | 3000;
+                pbId = setInterval(decreaseProgressBar, 250);
+                timerId = setInterval(() => {
+                    refreshResults();
+                }, interval);
+                refreshResults();
+                iButton.innerText = "Clear Interval"
+            } else {
+                clearInterval(timerId);
+                timerId = null;
+                clearInterval(pbId);
+                pbId = null;
+                iButton.innerText = "Set Interval"
+            }
+        });
+
+        function computeProgressBarWidth(start, now, duration) {
+            let elapsedTime = now - start;
+            let progress = elapsedTime / duration;
+            let width = essuieGlace ? 100 - (progress * 100) : progress * 100;
+            // console.log(duration, elapsedTime, width, essuieGlace)
+            return width >= 0 ? width <= 100 ? width : 100 : 0; // Ensure width is between 0 and 100
+        }
+
+        let progressBar = document.querySelector('.progress-bar');
+        function decreaseProgressBar() {
+            if (start) {
+                let width = parseInt(progressBar.style.width);
+                let jetzt = performance.now()
+                let qwe = computeProgressBarWidth(start, jetzt, document.getElementById('intervalInput').value | 3000) + '%';
+                // console.log(qwe)
+                progressBar.style.width = qwe;  // (now - start) / ;
+            } else {
+                progressBar.style.width = '0';
+                // clearInterval(pbId); // Stop the interval when the progress bar reaches 0%
+            }
+        }
+
+        // Set interval to decrease progress bar width every 100 milliseconds
+        // pbId = setInterval(decreaseProgressBar, 1000);
+
+    </script>
+</body>
+
+</html>
