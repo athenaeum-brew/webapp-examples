@@ -22,5 +22,6 @@ def main():
     client_socket.close()
 
     print("Connection closed\n")
+    
 if __name__ == "__main__":
     main()
