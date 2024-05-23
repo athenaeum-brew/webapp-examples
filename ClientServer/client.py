@@ -7,7 +7,7 @@ def main():
     # Connect to the server
     client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     client_socket.connect((host, port))
-    print("\nConnected to server")
+    print("\nConnected to server", client_socket)
 
     # Send message to server
     message = "Hello from Python client"

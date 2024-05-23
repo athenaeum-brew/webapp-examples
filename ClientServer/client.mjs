@@ -6,7 +6,7 @@ const port = 12345;
 const client = new net.Socket();
 
 client.connect(port, host, () => {
-    console.log('\nConnected to server');
+    console.log(`\nConnected to server: ${client.remoteAddress.replace(/^::1$/, '127.0.0.1')}:${client.remotePort}`);
     
     // Send message to server
     client.write('Hello from Node.js client');
