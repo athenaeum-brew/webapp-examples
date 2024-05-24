@@ -57,15 +57,6 @@
         <artifactId>maven-war-plugin</artifactId>
         <version>3.4.0</version>
       </plugin>
-      <plugin>
-        <groupId>com.google.cloud.tools</groupId>
-        <artifactId>appengine-maven-plugin</artifactId>
-        <version>2.4.0</version>
-        <configuration>
-          <projectId>athenaeum-brew</projectId>
-          <deploy.version>GCLOUD_CONFIG</deploy.version>
-        </configuration>
-      </plugin>
     </plugins>
   </build>
 </project>
