@@ -33,8 +33,8 @@ public class UndertowThymeleafServer {
 
             // Create a Thymeleaf context and add variables
             Context context = new Context();
-            context.setVariable("title",
-                    "A programmer had a problem. He thought to himself, \"I know, I'll solve it with threads!\"");
+            context.setVariable("header",
+                    "A programmer had a problem. He thought to himself, \"I know, I'll solve it with HTTP!\"");
 
             // Process the Thymeleaf template with the given context
             String html = templateEngine.process(templateName, context);

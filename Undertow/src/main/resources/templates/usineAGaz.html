@@ -20,7 +20,7 @@ python -m http.server 987
 
 <body>
     <div id="content" class="container">
-        <h1>A programmer had a problem. He thought to himself, "I know, I'll solve it with threads!". </h1>
+        <h1>A programmer had a problem. He thought to himself, "I know, I'll solve it with HTTP!". </h1>
         <hr>
         <!-- h1>
             <div id="resul-0" class="result"></div>
@@ -109,7 +109,7 @@ python -m http.server 987
                     setTimeout(() => {
                         makeRequest('http://localhost:8080/data', div.id, function (response, id) {
                             // console.log(id)
-                            let originalDiv = document.getElementById(id);
+                            let originalDiv = document.getElementById(div.id);
                             // console.log(div.id, originalDiv.id)
                             updateDiv(originalDiv, response);
                         })

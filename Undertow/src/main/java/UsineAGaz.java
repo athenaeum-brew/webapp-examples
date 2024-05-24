@@ -28,7 +28,7 @@ public class UsineAGaz {
     private final static String identity;
 
     static {
-        responder = new ResponderBlockingQueue();
+        responder = new ResponderBasic();
         identity = Integer.toHexString(System.identityHashCode(UndertowThymeleafServer.class));
     }
 
@@ -182,7 +182,7 @@ public class UsineAGaz {
         }
 
         @Override
-        synchronized public StringIntPair next() {
+        /* synchronized */ public StringIntPair next() {
             int index = increment();
             return new StringIntPair(Responder.immutableList.get(index), index);
         }
