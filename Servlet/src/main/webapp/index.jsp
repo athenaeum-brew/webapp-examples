@@ -1,5 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
+    <!-- 
+        cd webapp
+        python3 -m http.server 987
+    -->
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,6 +13,7 @@
 <body>
     <main class="container">
         <h1><%= header %></h1>
+        <pre>mvn clean package appengine:deploy</pre>
     </main>
 </body>
 </html>
