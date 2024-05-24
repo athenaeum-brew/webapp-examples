@@ -45,8 +45,9 @@ public class SessionListener implements HttpSessionListener {
             }
 
             servletContext.setAttribute("counter", counter);
+
+            Sessions.INSTANCE.broadcast(counter);
         }
 
-        Sessions.INSTANCE.broadcast(counter);
     }
 }

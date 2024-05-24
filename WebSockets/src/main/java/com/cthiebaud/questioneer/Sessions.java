@@ -1,16 +1,15 @@
 package com.cthiebaud.questioneer;
 
 import java.io.IOException;
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.Set;
 
 import jakarta.websocket.Session;
+import java.util.concurrent.ConcurrentHashMap;
 
 public enum Sessions {
     INSTANCE;
 
-    final private Set<Session> activeSessions = Collections.synchronizedSet(new HashSet<>());
+    final private Set<Session> activeSessions = ConcurrentHashMap.newKeySet();
 
     public void register(Session session) {
         System.out.println("added web socket " + session.getId());
